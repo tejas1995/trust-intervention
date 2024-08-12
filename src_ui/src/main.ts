@@ -209,9 +209,11 @@ if (globalThis.uid.startsWith("demo_paper")) {
 } else {
 
 }
-
+console.log("Running with UID", globalThis.uid)
 load_data().catch((_error) => {
-    alert("Invalid user id.")
+    //alert("Invalid user id.")
+    console.log("Invalid user id.")
+    console.log(globalThis.uid!)
     window.location.reload()
 }
 ).then((new_data) => {
@@ -233,7 +235,7 @@ document.onvisibilitychange = () => {
     if (!alert_active) {
         count_exited_page += 1
         alert_active = true
-        alert("Please don't leave the page. If you do so again, we may restrict paying you.")
+        // alert("Please don't leave the page. If you do so again, we may restrict paying you.")
         alert_active = false
     }
 }

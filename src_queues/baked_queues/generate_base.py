@@ -44,6 +44,17 @@ def decide_truthfulness_base(question):
         "ai_confidence": f"{ai_confidence:.0%}",
     }
 
+def decide_truthfulness_calibrated(question):
+    ai_confidence = random.uniform(0.1, 0.9)
+    ai_is_correct = random.choices([True, False], weights=[ai_confidence, 1 - ai_confidence], k=1)[0]
+
+    return {
+        "question": question["question"],
+        "answer": question["answer1"] if ai_is_correct else question["answer2"],
+        "ai_is_correct": ai_is_correct,
+        "ai_confidence": f"{ai_confidence:.0%}",
+    }
+
 
 def decide_truthfulness_vague(question):
     ai_is_correct = random.choices([True, False], weights=[0.7, 0.3], k=1)[0]
@@ -130,6 +141,11 @@ QUEUE_PLAN = {
         45 * [decide_truthfulness_base] +
         []
     ),
+    # calibrated
+    "calibrated": (
+        60 * [decide_truthfulness_calibrated] +
+        []
+    )
 }
 
 UIDs = [

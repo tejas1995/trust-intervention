@@ -18,6 +18,7 @@ export async function log_data(data): Promise<any> {
     
     data["url_data"] = globalThis.url_data
     console.log("logged", data)
+    console.log("Logging to", SERVER_LOG_ROOT + "log")
 
     try {
         let result = await $.ajax(
