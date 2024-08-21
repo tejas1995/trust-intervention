@@ -27,8 +27,8 @@
                     <li>After your decision, you may place a bet based on how certain you are.</li>
                     <li>If your decision regarding the AI system is correct, you get the bet amount but if it is
                         incorrect, you lose it.</li>
-                    <li>Your payment is $0.5 plus whatever you accumulate during this experiment (therefore the
-                        guaranteed minimum is $0.5).</li>
+                    <li>Your payment is $1.0 plus whatever you accumulate during this experiment (therefore the
+                        guaranteed minimum is $1.0).</li>
                 </ul>
 
             </div>
@@ -36,7 +36,7 @@
             <br>
             <div style="text-align: right; height: 20px; margin-left: -30px">
                 <div id="progress" style="width: 150px; float: left;">(-/-)</div>
-                <div id="balance" style="width: 200px; float: right;">Balance: $0+$0.5</div>
+                <div id="balance" style="width: 200px; float: right;">Balance: $0+$1.0</div>
             </div>
         </div>
 
@@ -57,15 +57,15 @@
             <input id="button_instructions_prev" type="button" value="Previous">
             <input id="button_instructions_next" type="button" value="Next" style="margin-bottom: 10px">
 
-            <div id="instructions_0">Welcome to our user study. We will first walk you through an example question with
-                images and afterwards you will annotated 60 examples.</div>
+            <div id="instructions_0">Welcome to our user study. You will be trying to answer questions with the assistance of an AI system. We will first walk you through an example question with
+                images and afterwards you will annotate 60 examples.</div>
             <div id="instructions_1">
                 Each example consists of a <b>question</b>, the <b>AI answer</b> and the <b>AI confidence</b>.
 
                 <img src="img/instructions_1.png">
             </div>
             <div id="instructions_2">
-                Your task is to decide, whether the AI system is <b>correct</b> or <b>incorrect</b>.
+                Your task is to decide whether the AI system is <b>correct</b> or <b>incorrect</b>, by looking at the AI confidence.
 
                 <img src="img/instructions_2.png">
             </div>
@@ -77,9 +77,8 @@
             </div>
             <div id="instructions_4">
                 If your decision about the correctness of the AI system is correct, you <b>receive money</b> and
-                you <b>lose it</b> if your decision was wrong. The payoff may not always be symmetric.
-                The guaranteed minimum is $0.5 regardless of your performance, but you can earn up to $4.5 + $0.5 if
-                your bets are correct.
+                you <b>lose it</b> if your decision was wrong. Therefore, for each question, you can increase your balance by $0.1 or decrease it by $0.1 (your total balance will not fall below $0 though). 
+                The guaranteed minimum is $1.0 regardless of your performance, but you can earn more money if your bets are correct (the additional money will be paid out as bonuses).
                 <br>
                 <img src="img/instructions_4.png">
             </div>
