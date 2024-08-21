@@ -190,7 +190,7 @@ globalThis.url_data = paramsToObject(urlParams.entries())
 if (UIDFromURL != null) {
     globalThis.uid = UIDFromURL as string
     if (globalThis.uid == "prolific_random") {
-        let queue_id = `${Math.floor(Math.random() * 50)}`.padStart(3, "0")
+        let queue_id = `${Math.floor(Math.random() * 10)}`.padStart(3, "0")
         globalThis.uid = `${urlParams.get("prolific_queue_name")}_${queue_id}`
     }
 } else if (DEVMODE) {
