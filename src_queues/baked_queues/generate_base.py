@@ -12,6 +12,7 @@ import json
 from argparse import ArgumentParser
 import random
 import copy
+import numpy as np
 
 # ./src/baked_queues/generate_base.py --plan intervention_ci_long --uid-count 50 --reward-ratio 1x2
 # ./src/baked_queues/generate_base.py --plan intervention_ci_long --uid-count 50 --reward-ratio 2x1
@@ -29,20 +30,20 @@ random.seed(args.seed)
 data = json.load(open(args.data, "r"))
 
 
-def decide_truthfulness_base(question):
-    ai_is_correct = random.choices([True, False], weights=[0.7, 0.3], k=1)[0]
-    ai_confidence = (
-        random.uniform(0.45, 0.8)
-        if ai_is_correct
-        else random.uniform(0.2, 0.55)
-    )
-
-    return {
-        "question": question["question"],
-        "answer": question["answer1"] if ai_is_correct else question["answer2"],
-        "ai_is_correct": ai_is_correct,
-        "ai_confidence": f"{ai_confidence:.0%}",
-    }
+#def decide_truthfulness_base(question):
+#    ai_is_correct = random.choices([True, False], weights=[0.7, 0.3], k=1)[0]
+#    ai_confidence = (
+#        random.uniform(0.45, 0.8)
+#        if ai_is_correct
+#        else random.uniform(0.2, 0.55)
+#    )
+#
+#    return {
+#        "question": question["question"],
+#        "answer": question["answer1"] if ai_is_correct else question["answer2"],
+#        "ai_is_correct": ai_is_correct,
+#        "ai_confidence": f"{ai_confidence:.0%}",
+#    }
 
 def decide_truthfulness_calibrated(question):
     ai_confidence = random.uniform(0.1, 0.9)
@@ -55,14 +56,9 @@ def decide_truthfulness_calibrated(question):
         "ai_confidence": f"{ai_confidence:.0%}",
     }
 
-
-def decide_truthfulness_vague(question):
-    ai_is_correct = random.choices([True, False], weights=[0.7, 0.3], k=1)[0]
-    ai_confidence = (
-        random.uniform(0.45, 0.55)
-        if ai_is_correct else
-        random.uniform(0.4, 0.5)
-    )
+def decide_truthfulness_confidently_incorrect(question):
+    ai_is_correct = random.choices([True, False], weights=[0.1, 0.9], k=1)[0]
+    ai_confidence = random.uniform(0.75, 0.9)
 
     return {
         "question": question["question"],
@@ -71,11 +67,13 @@ def decide_truthfulness_vague(question):
         "ai_confidence": f"{ai_confidence:.0%}",
     }
 
-
-def decide_truthfulness_ci(question):
-    ai_is_correct = random.choices([True, False], weights=[0.01, 0.99], k=1)[0]
-    ai_confidence = random.uniform(0.7, 1.0)
-
+def decide_truthfulness_always_confident(question):
+    ai_is_correct = random.choices([True, False], weights=[0.5, 0.5], k=1)[0]
+    if ai_is_correct:
+        ai_confidence = np.random.beta(a=8, b=2)
+    else:
+        ai_confidence = np.random.beta(a=5, b=2)
+    
     return {
         "question": question["question"],
         "answer": question["answer1"] if ai_is_correct else question["answer2"],
@@ -83,11 +81,12 @@ def decide_truthfulness_ci(question):
         "ai_confidence": f"{ai_confidence:.0%}",
     }
 
-
-def decide_truthfulness_uc(question):
-    ai_is_correct = random.choices([True, False], weights=[0.99, 0.01], k=1)[0]
-    ai_confidence = random.uniform(0.0, 0.3)
-
+def decide_truthfulness_separable(question):
+    ai_is_correct = random.choices([True, False], weights=[0.5, 0.5], k=1)[0]
+    if ai_is_correct:
+        ai_confidence = np.random.beta(a=15, b=2)
+    else:
+        ai_confidence = np.random.beta(a=6, b=5)
     return {
         "question": question["question"],
         "answer": question["answer1"] if ai_is_correct else question["answer2"],
@@ -95,57 +94,111 @@ def decide_truthfulness_uc(question):
         "ai_confidence": f"{ai_confidence:.0%}",
     }
 
+#def decide_truthfulness_vague(question):
+#    ai_is_correct = random.choices([True, False], weights=[0.7, 0.3], k=1)[0]
+#    ai_confidence = (
+#        random.uniform(0.45, 0.55)
+#        if ai_is_correct else
+#        random.uniform(0.4, 0.5)
+#    )
+#
+#    return {
+#        "question": question["question"],
+#        "answer": question["answer1"] if ai_is_correct else question["answer2"],
+#        "ai_is_correct": ai_is_correct,
+#        "ai_confidence": f"{ai_confidence:.0%}",
+#    }
+#
+#
+#def decide_truthfulness_ci(question):
+#    ai_is_correct = random.choices([True, False], weights=[0.01, 0.99], k=1)[0]
+#    ai_confidence = random.uniform(0.7, 1.0)
+#
+#    return {
+#        "question": question["question"],
+#        "answer": question["answer1"] if ai_is_correct else question["answer2"],
+#        "ai_is_correct": ai_is_correct,
+#        "ai_confidence": f"{ai_confidence:.0%}",
+#    }
+#
+#
+#def decide_truthfulness_uc(question):
+#    ai_is_correct = random.choices([True, False], weights=[0.99, 0.01], k=1)[0]
+#    ai_confidence = random.uniform(0.0, 0.3)
+#
+#    return {
+#        "question": question["question"],
+#        "answer": question["answer1"] if ai_is_correct else question["answer2"],
+#        "ai_is_correct": ai_is_correct,
+#        "ai_confidence": f"{ai_confidence:.0%}",
+#    }
+#
+#
 
 QUEUE_PLAN = {
-    # control
-    "control_long": (
-        60 * [decide_truthfulness_base] +
-        []
-    ),
-    # confidently incorrect
-    "intervention_ci_long": (
-        10 * [decide_truthfulness_base] +
-        5 * [decide_truthfulness_ci] +
-        45 * [decide_truthfulness_base] +
-        []
-    ),
-    "intervention_ci_1_long": (
-        10 * [decide_truthfulness_base] +
-        1 * [decide_truthfulness_ci] +
-        49 * [decide_truthfulness_base] +
-        []
-    ),
-    "intervention_ci_3_long": (
-        10 * [decide_truthfulness_base] +
-        3 * [decide_truthfulness_ci] +
-        47 * [decide_truthfulness_base] +
-        []
-    ),
-    "intervention_ci_7_long": (
-        10 * [decide_truthfulness_base] +
-        7 * [decide_truthfulness_ci] +
-        43 * [decide_truthfulness_base] +
-        []
-    ),
-    "intervention_ci_9_long": (
-        10 * [decide_truthfulness_base] +
-        9 * [decide_truthfulness_ci] +
-        41 * [decide_truthfulness_base] +
-        []
-    ),
-    # unconfidently
-    # correct
-    "intervention_uc_long": (
-        10 * [decide_truthfulness_base] +
-        5 * [decide_truthfulness_uc] +
-        45 * [decide_truthfulness_base] +
-        []
-    ),
+    ## control
+    #"control_long": (
+    #    60 * [decide_truthfulness_base] +
+    #    []
+    #),
+    ## confidently incorrect
+    #"intervention_ci_long": (
+    #    10 * [decide_truthfulness_base] +
+    #    5 * [decide_truthfulness_ci] +
+    #    45 * [decide_truthfulness_base] +
+    #    []
+    #),
+    #"intervention_ci_1_long": (
+    #    10 * [decide_truthfulness_base] +
+    #    1 * [decide_truthfulness_ci] +
+    #    49 * [decide_truthfulness_base] +
+    #    []
+    #),
+    #"intervention_ci_3_long": (
+    #    10 * [decide_truthfulness_base] +
+    #    3 * [decide_truthfulness_ci] +
+    #    47 * [decide_truthfulness_base] +
+    #    []
+    #),
+    #"intervention_ci_7_long": (
+    #    10 * [decide_truthfulness_base] +
+    #    7 * [decide_truthfulness_ci] +
+    #    43 * [decide_truthfulness_base] +
+    #    []
+    #),
+    #"intervention_ci_9_long": (
+    #    10 * [decide_truthfulness_base] +
+    #    9 * [decide_truthfulness_ci] +
+    #    41 * [decide_truthfulness_base] +
+    #    []
+    #),
+    ## unconfidently
+    ## correct
+    #"intervention_uc_long": (
+    #    10 * [decide_truthfulness_base] +
+    #    5 * [decide_truthfulness_uc] +
+    #    45 * [decide_truthfulness_base] +
+    #    []
+    #),
     # calibrated
     "calibrated": (
         60 * [decide_truthfulness_calibrated] +
         []
-    )
+    ),
+    "always_confident": (
+        60 * [decide_truthfulness_always_confident] +
+        []
+    ),
+    "separable": (
+        60 * [decide_truthfulness_separable] +
+        []
+    ),
+    "calibrated_with_ci": (
+        10 * [decide_truthfulness_calibrated] +
+        5 * [decide_truthfulness_confidently_incorrect] +
+        45 * [decide_truthfulness_calibrated] +
+        []
+    ),
 }
 
 UIDs = [

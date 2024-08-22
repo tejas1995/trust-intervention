@@ -123,7 +123,7 @@ function show_result() {
         balance -= bet_val/1.0
         balance = Math.max(0, balance)
     }
-    $("#balance").text(`Balance: $${balance.toFixed(2)} + $0.5`)
+    $("#balance").text(`Balance: $${balance.toFixed(2)} + $1.0`)
     $("#result_span").html(message)
     $("#button_next").show()
     $("#result_span").show()
@@ -211,7 +211,7 @@ if (globalThis.uid.startsWith("demo_paper")) {
 }
 console.log("Running with UID", globalThis.uid)
 load_data().catch((_error) => {
-    //alert("Invalid user id.")
+    alert("Invalid user id.")
     console.log("Invalid user id.")
     console.log(globalThis.uid!)
     window.location.reload()
@@ -235,7 +235,7 @@ document.onvisibilitychange = () => {
     if (!alert_active) {
         count_exited_page += 1
         alert_active = true
-        // alert("Please don't leave the page. If you do so again, we may restrict paying you.")
+        alert("Please don't leave the page. If you do so again, we may restrict paying you.")
         alert_active = false
     }
 }

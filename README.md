@@ -1,3 +1,10 @@
+# Tejas's Mods/Notes
+
+1. To run the interface, run `npm run deploy` in the `src_ui` directory. The interface can then be accessed at [https://tejas1995.github.io/trust-intervention/?uid=prolific_random&prolific_queue_name=calibrated_1x1&prolific_id=random](https://tejas1995.github.io/trust-intervention/?uid=prolific_random&prolific_queue_name=calibrated_1x1&prolific_id=random).
+
+2. To create the baked_queues, run `python3 src_queues/baked_queues/generate_base.py`.
+
+
 # A Diachronic Perspective on User Trust in AI under Uncertainty
 
 > In a human-AI collaboration, users build a mental model of the AI system based on its veracity and how it presents its decision, e.g. its presentation of system confidence and an explanation of the output. 

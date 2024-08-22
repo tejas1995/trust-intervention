@@ -1,7 +1,7 @@
 import { DEVMODE } from './globals'
 import { MOCKMODE } from './main'
 
-let SERVER_LOG_ROOT = DEVMODE ? "http://127.0.0.1:5000/" : "https://zouharvi.pythonanywhere.com/"
+let SERVER_LOG_ROOT = DEVMODE ? "http://127.0.0.1:5000/" : "https://tejassrinivasan.pythonanywhere.com/"
 
 export async function load_data(): Promise<any> {
     // include timestamp so that things don't get cached
@@ -17,6 +17,10 @@ export async function log_data(data): Promise<any> {
     }
     
     data["url_data"] = globalThis.url_data
+    console.log("Data")
+    if (!("study_id" in data['url_data'])) {
+        data['url_data']["study_id"] = "trialrun_studies"
+    }
     console.log("logged", data)
     console.log("Logging to", SERVER_LOG_ROOT + "log")
 
@@ -25,7 +29,7 @@ export async function log_data(data): Promise<any> {
             SERVER_LOG_ROOT + "log",
             {
                 data: JSON.stringify({
-                    project: "trust-intervention",
+                    project: "trust-intervention/"+data['url_data']['study_id'],
                     uid: globalThis.uid,
                     payload: JSON.stringify(data),
                 }),
